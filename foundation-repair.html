@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texas Foundation Repair Estimator</title>
+    <style>
+        body {
+            background-color: #f5f7fb; /* Light gray-blue */
+            margin: 0;
+            padding: 1rem;
+            box-sizing: border-box;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .container {
+            max-width: 90%;
+            width: min(900px, 100%);
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #1e3a8a; /* Deep blue */
+            font-size: clamp(1.5rem, 5vw, 1.8rem);
+            margin: 0 0 0.5rem;
+        }
+        h2 {
+            color: #1e3a8a;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            margin: 0 0 1rem;
+            text-align: center;
+        }
+        p {
+            color: #4b5563; /* Cool gray */
+            text-align: center;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            margin: 0 0 1rem;
+        }
+        #inputScreen {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Flag_of_Texas.svg/1024px-Flag_of_Texas.svg.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 8px;
+            padding: 1rem;
+            position: relative;
+        }
+        #inputScreen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.85); /* Semi-transparent white overlay */
+            border-radius: 8px;
+            z-index: 1;
+        }
+        #inputScreen > * {
+            position: relative;
+            z-index: 2;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        label {
+            color: #1e40af; /* Bright blue */
+            font-weight: 500;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        abbr {
+            text-decoration: none;
+            cursor: help;
+            position: relative;
+        }
+        abbr:hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            background: #db2777; /* Coral pink */
+            color: #ffffff;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            width: 200px;
+            z-index: 10;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
+        }
+        select, input[type="number"] {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #d1d5db; /* Light gray */
+            border-radius: 6px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            color: #1f2937; /* Dark gray */
+            background: #f9fafb;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #3b82f6; /* Bright blue */
+        }
+        input[type="number"]::placeholder {
+            color: #9ca3af; /* Muted gray */
+        }
+        .optional {
+            grid-column: span 2;
+        }
+        .checkbox-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        input[type="checkbox"] {
+            accent-color: #3b82f6;
+            margin-right: 0.3rem;
+        }
+        button {
+            grid-column: span 2;
+            padding: 0.8rem;
+            background: #db2777; /* Coral pink */
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: clamp(1rem, 3vw, 1.1rem);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        button:hover {
+            background: #be185d;
+            transform: translateY(-2px);
+        }
+        #summaryScreen {
+            text-align: left;
+        }
+        #summaryContent {
+            background: #eff6ff; /* Light blue */
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            color: #1f2937;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            line-height: 1.5;
+        }
+        #summaryContent p {
+            margin: 0.5rem 0;
+            text-align: left;
+        }
+        #summaryContent .total {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: clamp(1.1rem, 3.5vw, 1.2rem);
+        }
+        #summaryContent .disclaimer {
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+            font-style: italic;
+            color: #6b7280;
+        }
+        #returnBtn {
+            background: #6b7280; /* Neutral gray */
+        }
+        #returnBtn:hover {
+            background: #4b5563;
+        }
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .optional, button {
+                grid-column: span 1;
+            }
+            abbr:hover::after {
+                width: 80%;
+                max-width: 250px;
+                font-size: 0.7rem;
+                bottom: 4.5rem; /* Above Calculate button */
+                right: 0.5rem;
+                padding: 0.4rem;
+                line-height: 1.2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Texas Foundation Repair Estimator</h1>
+        <p>Estimate piers and costs for your Texas home. Hover labels for details. Based on average pricing.</p>
+        <div id="inputScreen">
+            <form id="estimateForm">
+                <div class="form-grid">
+                    <div>
+                        <label for="foundationType">
+                            <abbr title="Slab: Concrete poured on ground (common in Texas). Crawl Space: Raised with space underneath. Basement: Below-ground (rare in Texas).">Foundation Type:</abbr>
+                        </label>
+                        <select id="foundationType" required>
+                            <option value="">Select</option>
+                            <option value="slab">Slab</option>
+                            <option value="crawl">Crawl Space</option>
+                            <option value="basement">Basement</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="squareFootage">
+                            <abbr title="Your home’s livable area in square feet (e.g., 1,500 sq ft). Check property records if unsure.">Square Footage:</abbr>
+                        </label>
+                        <input type="number" id="squareFootage" min="0" required placeholder="e.g., 1500">
+                    </div>
+                    <div>
+                        <label for="repairLocation">
+                            <abbr title="Perimeter: Exterior walls. Interior: Inside home (e.g., under floors). Both: Perimeter and interior.">Repair Location:</abbr>
+                        </label>
+                        <select id="repairLocation" required>
+                            <option value="">Select</option>
+                            <option value="perimeter">Perimeter</option>
+                            <option value="interior">Interior</option>
+                            <option value="both">Both</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="severity">
+                            <abbr title="Light: Minor cracks (<1/4 inch), slight unevenness. Moderate: Wider cracks (1/4-1/2 inch), sloping. Severe: Large cracks (>1/2 inch), major issues.">Severity:</abbr>
+                        </label>
+                        <select id="severity" required>
+                            <option value="">Select</option>
+                            <option value="light">Light</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="severe">Severe</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="pierType">
+                            <abbr title="Concrete: Pressed pilings, cost-effective. Steel: Stronger, deeper. Helical: Screw-like for unstable soils.">Pier Type:</abbr>
+                        </label>
+                        <select id="pierType" required>
+                            <option value="">Select</option>
+                            <option value="concrete">Concrete</option>
+                            <option value="steel">Steel</option>
+                            <option value="helical">Helical</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="depth">
+                            <abbr title="Shallow: Up to 10 ft, stable soils. Medium: 10-20 ft, typical Texas clay. Deep: Over 20 ft, unstable soils.">Pier Depth:</abbr>
+                        </label>
+                        <select id="depth" required>
+                            <option value="">Select</option>
+                            <option value="shallow">Shallow</option>
+                            <option value="medium">Medium</option>
+                            <option value="deep">Deep</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="access">
+                            <abbr title="Easy: Clear access. Moderate: Some obstacles (e.g., landscaping). Difficult: Major obstructions (e.g., tight spaces).">Access Difficulty:</abbr>
+                        </label>
+                        <select id="access" required>
+                            <option value="">Select</option>
+                            <option value="easy">Easy</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="difficult">Difficult</option>
+                        </select>
+                    </div>
+                    <div class="optional">
+                        <label>
+                            <abbr title="Permits: ~$500, required for most Texas repairs. Additional Repairs: ~$1,500 for cosmetic or drainage fixes.">Optional Costs:</abbr>
+                        </label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" id="permits"> Permits</label>
+                            <label><input type="checkbox" id="additional"> Additional Repairs</label>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="calculateBtn">Calculate</button>
+            </form>
+        </div>
+        <div id="summaryScreen" style="display:none;">
+            <h2>Your Estimate Summary</h2>
+            <div id="summaryContent"></div>
+            <button id="returnBtn">Return to Input</button>
+        </div>
+    </div>
+
+    <script>
+        function calculateEstimate() {
+            // Get form values
+            const foundationType = document.getElementById('foundationType').value;
+            const squareFootage = parseFloat(document.getElementById('squareFootage').value);
+            const repairLocation = document.getElementById('repairLocation').value;
+            const severity = document.getElementById('severity').value;
+            const pierType = document.getElementById('pierType').value;
+            const depth = document.getElementById('depth').value;
+            const access = document.getElementById('access').value;
+            const includePermits = document.getElementById('permits').checked;
+            const includeAdditional = document.getElementById('additional').checked;
+
+            // Validate inputs
+            if (!foundationType || isNaN(squareFootage) || squareFootage <= 0 || !repairLocation || !severity || !pierType || !depth || !access) {
+                alert('Please fill in all fields correctly.');
+                return;
+            }
+
+            // Calculate perimeter
+            const perimeter = 4 * Math.sqrt(squareFootage);
+
+            // Calculate base number of piers
+            let baseNumberOfPiers;
+            if (foundationType === 'slab') {
+                if (repairLocation === 'perimeter') {
+                    baseNumberOfPiers = perimeter / 6;
+                } else if (repairLocation === 'interior') {
+                    baseNumberOfPiers = squareFootage / 100;
+                } else {
+                    baseNumberOfPiers = (perimeter / 6) + (squareFootage / 200);
+                }
+            } else {
+                baseNumberOfPiers = squareFootage / 150;
+            }
+
+            // Apply severity multiplier
+            const severityMultipliers = { light: 1.0, moderate: 1.5, severe: 2.0 };
+            const severityMultiplier = severityMultipliers[severity];
+            const adjustedNumberOfPiers = baseNumberOfPiers * severityMultiplier;
+            const estimatedPiers = Math.round(adjustedNumberOfPiers);
+
+            // Texas-specific pricing
+            const pierCosts = { 
+                concrete: 1100,
+                steel: 1400,
+                helical: 2000
+            };
+            const baseCostPerPier = pierCosts[pierType];
+
+            // Apply depth multiplier
+            const depthMultipliers = { 
+                shallow: 1.0,
+                medium: 1.15,
+                deep: 1.4
+            };
+            const depthMultiplier = depthMultipliers[depth];
+            let adjustedCostPerPier = baseCostPerPier * depthMultiplier;
+
+            // Calculate pier cost
+            let pierCost = estimatedPiers * adjustedCostPerPier;
+
+            // Apply access multiplier
+            const accessMultipliers = { 
+                easy: 1.0, 
+                moderate: 1.1, 
+                difficult: 1.25
+            };
+            const accessMultiplier = accessMultipliers[access];
+            pierCost *= accessMultiplier;
+
+            // Optional costs
+            const permitCost = includePermits ? 500 : 0;
+            const additionalCost = includeAdditional ? 1500 : 0;
+
+            // Total cost
+            const totalCost = Math.round(pierCost + permitCost + additionalCost);
+
+            // Generate summary
+            const foundationLabels = { slab: 'Slab', crawl: 'Crawl Space', basement: 'Basement' };
+            const locationLabels = { perimeter: 'Perimeter', interior: 'Interior', both: 'Both' };
+            const severityLabels = { light: 'Light', moderate: 'Moderate', severe: 'Severe' };
+            const pierLabels = { concrete: 'Concrete', steel: 'Steel', helical: 'Helical' };
+            const depthLabels = { shallow: 'Shallow', medium: 'Medium', deep: 'Deep' };
+            const accessLabels = { easy: 'Easy', moderate: 'Moderate', difficult: 'Difficult' };
+
+            const summary = `
+                <p>For your ${squareFootage.toLocaleString()} sq ft home with a ${foundationLabels[foundationType].toLowerCase()} foundation, we've estimated the following for your foundation repair:</p>
+                <p><strong>Repair Scope</strong>: Addressing ${severityLabels[severity].toLowerCase()} damage at the ${locationLabels[repairLocation].toLowerCase()} of your home.</p>
+                <p><strong>Piers</strong>: ${estimatedPiers} ${pierLabels[pierType]} piers at ${depthLabels[depth].toLowerCase()} depth, costing $${pierCost.toLocaleString()} after adjusting for ${accessLabels[access].toLowerCase()} access.</p>
+                ${includePermits ? `<p><strong>Permits</strong>: Added $${permitCost.toLocaleString()} for required Texas permits.</p>` : ''}
+                ${includeAdditional ? `<p><strong>Additional Repairs</strong>: Included $${additionalCost.toLocaleString()} for cosmetic or drainage fixes.</p>` : ''}
+                <p class="total">Total Estimated Cost: $${totalCost.toLocaleString()}</p>
+                <p class="disclaimer">*Based on average Texas residential pricing. Consult a professional for an accurate quote.</p>
+            `;
+
+            // Show summary screen
+            document.getElementById('summaryContent').innerHTML = summary;
+            document.getElementById('inputScreen').style.display = 'none';
+            document.getElementById('summaryScreen').style.display = 'block';
+        }
+
+        function showInputScreen() {
+            // Reset to input screen
+            document.getElementById('summaryScreen').style.display = 'none';
+            document.getElementById('inputScreen').style.display = 'block';
+        }
+
+        // Add event listeners
+        document.getElementById('calculateBtn').addEventListener('click', calculateEstimate);
+        document.getElementById('returnBtn').addEventListener('click', showInputScreen);
+    </script>
+</body>
+</html>
