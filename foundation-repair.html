@@ -42,28 +42,10 @@
             margin: 0 0 0.5rem;
         }
         #inputScreen {
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Flag_of_Texas.svg/1024px-Flag_of_Texas.svg.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            background-color: #fff7cc; /* Light yellow */
             border-radius: 8px;
             padding: 1rem;
             position: relative;
-        }
-        #inputScreen::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.85);
-            border-radius: 8px;
-            z-index: 1;
-        }
-        #inputScreen > * {
-            position: relative;
-            z-index: 2;
         }
         .form-grid {
             display: grid;
@@ -87,7 +69,7 @@
             background: #f9fafb;
             transition: border-color 0.3s ease;
             box-sizing: border-box;
-            touch-action: manipulation; /* Smooth touch */
+            touch-action: manipulation;
         }
         select:focus, input[type="number"]:focus {
             outline: none;
@@ -161,12 +143,12 @@
             font-size: 0.9rem;
             line-height: 1.4;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            max-height: 4.5rem; /* Match container */
+            max-height: 4.5rem;
             overflow: hidden;
-            visibility: hidden; /* Hidden by default */
+            visibility: hidden;
         }
         #infoBox.active {
-            visibility: visible; /* Show when active */
+            visibility: visible;
         }
         #summaryScreen, #adminScreen {
             text-align: left;
@@ -249,7 +231,7 @@
                 width: 100%;
             }
             .info-box-container {
-                height: 5rem; /* Slightly taller for mobile */
+                height: 5rem;
             }
             #infoBox {
                 font-size: 0.8rem;
