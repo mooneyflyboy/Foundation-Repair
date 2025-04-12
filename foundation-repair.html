@@ -12,6 +12,7 @@
             box-sizing: border-box;
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
             min-height: 100vh;
+            -webkit-text-size-adjust: 100%; /* Prevent iOS zoom */
         }
         .container {
             max-width: 90%;
@@ -86,6 +87,7 @@
             background: #f9fafb;
             transition: border-color 0.3s ease;
             box-sizing: border-box;
+            touch-action: manipulation; /* Smooth touch */
         }
         select:focus, input[type="number"]:focus {
             outline: none;
@@ -129,6 +131,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.3s ease, transform 0.2s ease;
+            touch-action: manipulation;
         }
         button:hover {
             background: #be185d;
@@ -145,6 +148,10 @@
             font-size: 0.9rem;
             text-align: center;
         }
+        .info-box-container {
+            height: 4.5rem; /* Fixed height for info box */
+            margin: 0.5rem 0;
+        }
         #infoBox {
             background: #eff6ff; /* Light blue */
             color: #1f2937;
@@ -154,8 +161,12 @@
             font-size: 0.9rem;
             line-height: 1.4;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            margin: 0.5rem 0;
-            display: none;
+            max-height: 4.5rem; /* Match container */
+            overflow: hidden;
+            visibility: hidden; /* Hidden by default */
+        }
+        #infoBox.active {
+            visibility: visible; /* Show when active */
         }
         #summaryScreen, #adminScreen {
             text-align: left;
@@ -237,8 +248,12 @@
             button {
                 width: 100%;
             }
+            .info-box-container {
+                height: 5rem; /* Slightly taller for mobile */
+            }
             #infoBox {
                 font-size: 0.8rem;
+                max-height: 5rem;
             }
             #adminContent {
                 flex-direction: column;
@@ -257,7 +272,9 @@
     <div class="container">
         <h1>Texas Foundation Repair Estimator</h1>
         <p id="introText">Estimate piers and costs for your Texas home. Select fields for details below. Based on average pricing.</p>
-        <div id="infoBox"></div>
+        <div class="info-box-container">
+            <div id="infoBox"></div>
+        </div>
         <div id="inputScreen">
             <form id="estimateForm">
                 <div class="form-grid">
@@ -533,19 +550,18 @@
             document.getElementById('adminScreen').style.display = 'none';
             document.getElementById('summaryScreen').style.display = 'none';
             document.getElementById('inputScreen').style.display = 'block';
-            document.getElementById('infoBox').style.display = 'none';
+            document.getElementById('infoBox').classList.remove('active');
         }
 
         // Info box handling
         function showInfoBox(info) {
             const infoBox = document.getElementById('infoBox');
             infoBox.textContent = info;
-            infoBox.style.display = info ? 'block' : 'none';
+            infoBox.classList.toggle('active', !!info);
         }
 
         function setupInfoEvents() {
             const inputs = document.querySelectorAll('select, input[type="number"]');
-
             inputs.forEach(input => {
                 input.addEventListener('focus', () => {
                     showInfoBox(input.getAttribute('data-info'));
