@@ -11,6 +11,7 @@
             padding: 1rem;
             box-sizing: border-box;
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
         }
         .container {
             max-width: 90%;
@@ -37,7 +38,7 @@
             color: #4b5563; /* Cool gray */
             text-align: center;
             font-size: clamp(0.9rem, 3vw, 1rem);
-            margin: 0 0 1rem;
+            margin: 0 0 0.5rem;
         }
         #inputScreen {
             background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Flag_of_Texas.svg/1024px-Flag_of_Texas.svg.png');
@@ -55,7 +56,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255, 255, 255, 0.85); /* Semi-transparent white overlay */
+            background: rgba(255, 255, 255, 0.85);
             border-radius: 8px;
             z-index: 1;
         }
@@ -74,26 +75,6 @@
             font-size: clamp(0.9rem, 2.5vw, 1rem);
             display: block;
             margin-bottom: 0.3rem;
-        }
-        abbr {
-            text-decoration: none;
-            cursor: help;
-            position: relative;
-        }
-        abbr:hover::after {
-            content: attr(title);
-            position: absolute;
-            bottom: 1rem;
-            right: 1rem;
-            background: #db2777; /* Coral pink */
-            color: #ffffff;
-            padding: 0.5rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            width: 200px;
-            z-index: 10;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-            box-sizing: border-box;
         }
         select, input[type="number"] {
             width: 100%;
@@ -125,9 +106,21 @@
             accent-color: #3b82f6;
             margin-right: 0.3rem;
         }
-        button {
+        .button-group {
             grid-column: span 2;
-            padding: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .button-row {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        button {
+            padding: 0.8rem 1.5rem;
             background: #db2777; /* Coral pink */
             color: #ffffff;
             border: none;
@@ -141,10 +134,33 @@
             background: #be185d;
             transform: translateY(-2px);
         }
-        #summaryScreen {
+        #adminBtn {
+            background: #1e3a8a; /* Deep blue */
+        }
+        #adminBtn:hover {
+            background: #1e40af;
+        }
+        .copyright {
+            color: #4b5563; /* Dark gray */
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        #infoBox {
+            background: #eff6ff; /* Light blue */
+            color: #1f2937;
+            padding: 0.8rem;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin: 0.5rem 0;
+            display: none;
+        }
+        #summaryScreen, #adminScreen {
             text-align: left;
         }
-        #summaryContent {
+        #summaryContent, #adminContent {
             background: #eff6ff; /* Light blue */
             padding: 1rem;
             border-radius: 8px;
@@ -167,27 +183,72 @@
             font-style: italic;
             color: #6b7280;
         }
-        #returnBtn {
-            background: #6b7280; /* Neutral gray */
+        #adminContent {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            padding: 0.8rem;
         }
-        #returnBtn:hover {
+        .admin-section {
+            flex: 1;
+            min-width: 180px;
+            background: #ffffff;
+            padding: 0.8rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .admin-section h3 {
+            color: #1e3a8a;
+            font-size: 1rem;
+            margin: 0 0 0.5rem;
+            text-align: center;
+        }
+        .admin-section label {
+            font-size: 0.85rem;
+            margin: 0.2rem 0;
+            color: #1f2937;
+        }
+        .admin-section input[type="number"] {
+            margin: 0.2rem 0;
+            padding: 0.4rem;
+            font-size: 0.85rem;
+            border-radius: 4px;
+        }
+        #returnBtn, #returnBtnAdmin {
+            background: #6b7280; /* Neutral gray */
+            display: block;
+            margin: 0 auto;
+        }
+        #returnBtn:hover, #returnBtnAdmin:hover {
             background: #4b5563;
         }
         @media (max-width: 600px) {
             .form-grid {
                 grid-template-columns: 1fr;
             }
-            .optional, button {
+            .optional, .button-group {
                 grid-column: span 1;
             }
-            abbr:hover::after {
-                width: 80%;
-                max-width: 250px;
-                font-size: 0.7rem;
-                bottom: 4.5rem; /* Above Calculate button */
-                right: 0.5rem;
-                padding: 0.4rem;
-                line-height: 1.2;
+            .button-row {
+                flex-direction: column;
+                gap: 0.5rem;
+                width: 100%;
+            }
+            button {
+                width: 100%;
+            }
+            #infoBox {
+                font-size: 0.8rem;
+            }
+            #adminContent {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .admin-section {
+                min-width: 100%;
+            }
+            .copyright {
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -195,15 +256,14 @@
 <body>
     <div class="container">
         <h1>Texas Foundation Repair Estimator</h1>
-        <p>Estimate piers and costs for your Texas home. Hover labels for details. Based on average pricing.</p>
+        <p id="introText">Estimate piers and costs for your Texas home. Select fields for details below. Based on average pricing.</p>
+        <div id="infoBox"></div>
         <div id="inputScreen">
             <form id="estimateForm">
                 <div class="form-grid">
                     <div>
-                        <label for="foundationType">
-                            <abbr title="Slab: Concrete poured on ground (common in Texas). Crawl Space: Raised with space underneath. Basement: Below-ground (rare in Texas).">Foundation Type:</abbr>
-                        </label>
-                        <select id="foundationType" required>
+                        <label for="foundationType">Foundation Type:</label>
+                        <select id="foundationType" data-info="Slab: Concrete poured on ground (common in Texas). Crawl Space: Raised with space underneath. Basement: Below-ground (rare in Texas)." required>
                             <option value="">Select</option>
                             <option value="slab">Slab</option>
                             <option value="crawl">Crawl Space</option>
@@ -211,16 +271,12 @@
                         </select>
                     </div>
                     <div>
-                        <label for="squareFootage">
-                            <abbr title="Your home’s livable area in square feet (e.g., 1,500 sq ft). Check property records if unsure.">Square Footage:</abbr>
-                        </label>
-                        <input type="number" id="squareFootage" min="0" required placeholder="e.g., 1500">
+                        <label for="squareFootage">Square Footage:</label>
+                        <input type="number" id="squareFootage" data-info="Your home’s livable area in square feet (e.g., 1,500 sq ft). Check property records if unsure." min="0" required placeholder="e.g., 1500">
                     </div>
                     <div>
-                        <label for="repairLocation">
-                            <abbr title="Perimeter: Exterior walls. Interior: Inside home (e.g., under floors). Both: Perimeter and interior.">Repair Location:</abbr>
-                        </label>
-                        <select id="repairLocation" required>
+                        <label for="repairLocation">Repair Location:</label>
+                        <select id="repairLocation" data-info="Perimeter: Exterior walls. Interior: Inside home (e.g., under floors). Both: Perimeter and interior." required>
                             <option value="">Select</option>
                             <option value="perimeter">Perimeter</option>
                             <option value="interior">Interior</option>
@@ -228,10 +284,8 @@
                         </select>
                     </div>
                     <div>
-                        <label for="severity">
-                            <abbr title="Light: Minor cracks (<1/4 inch), slight unevenness. Moderate: Wider cracks (1/4-1/2 inch), sloping. Severe: Large cracks (>1/2 inch), major issues.">Severity:</abbr>
-                        </label>
-                        <select id="severity" required>
+                        <label for="severity">Severity:</label>
+                        <select id="severity" data-info="Light: Minor cracks (<1/4 inch), slight unevenness. Moderate: Wider cracks (1/4-1/2 inch), sloping. Severe: Large cracks (>1/2 inch), major issues." required>
                             <option value="">Select</option>
                             <option value="light">Light</option>
                             <option value="moderate">Moderate</option>
@@ -239,10 +293,8 @@
                         </select>
                     </div>
                     <div>
-                        <label for="pierType">
-                            <abbr title="Concrete: Pressed pilings, cost-effective. Steel: Stronger, deeper. Helical: Screw-like for unstable soils.">Pier Type:</abbr>
-                        </label>
-                        <select id="pierType" required>
+                        <label for="pierType">Pier Type:</label>
+                        <select id="pierType" data-info="Concrete: Pressed pilings, cost-effective. Steel: Stronger, deeper. Helical: Screw-like for unstable soils." required>
                             <option value="">Select</option>
                             <option value="concrete">Concrete</option>
                             <option value="steel">Steel</option>
@@ -250,10 +302,8 @@
                         </select>
                     </div>
                     <div>
-                        <label for="depth">
-                            <abbr title="Shallow: Up to 10 ft, stable soils. Medium: 10-20 ft, typical Texas clay. Deep: Over 20 ft, unstable soils.">Pier Depth:</abbr>
-                        </label>
-                        <select id="depth" required>
+                        <label for="depth">Pier Depth:</label>
+                        <select id="depth" data-info="Shallow: Up to 10 ft, stable soils. Medium: 10-20 ft, typical Texas clay. Deep: Over 20 ft, unstable soils." required>
                             <option value="">Select</option>
                             <option value="shallow">Shallow</option>
                             <option value="medium">Medium</option>
@@ -261,10 +311,8 @@
                         </select>
                     </div>
                     <div>
-                        <label for="access">
-                            <abbr title="Easy: Clear access. Moderate: Some obstacles (e.g., landscaping). Difficult: Major obstructions (e.g., tight spaces).">Access Difficulty:</abbr>
-                        </label>
-                        <select id="access" required>
+                        <label for="access">Access Difficulty:</label>
+                        <select id="access" data-info="Easy: Clear access. Moderate: Some obstacles (e.g., landscaping). Difficult: Major obstructions (e.g., tight spaces)." required>
                             <option value="">Select</option>
                             <option value="easy">Easy</option>
                             <option value="moderate">Moderate</option>
@@ -272,16 +320,20 @@
                         </select>
                     </div>
                     <div class="optional">
-                        <label>
-                            <abbr title="Permits: ~$500, required for most Texas repairs. Additional Repairs: ~$1,500 for cosmetic or drainage fixes.">Optional Costs:</abbr>
-                        </label>
+                        <label for="permits">Optional Costs:</label>
                         <div class="checkbox-group">
                             <label><input type="checkbox" id="permits"> Permits</label>
                             <label><input type="checkbox" id="additional"> Additional Repairs</label>
                         </div>
                     </div>
+                    <div class="button-group">
+                        <div class="button-row">
+                            <button type="button" id="calculateBtn">Calculate</button>
+                            <button type="button" id="adminBtn">Admin</button>
+                        </div>
+                        <div class="copyright">© P Bristow 2025</div>
+                    </div>
                 </div>
-                <button type="button" id="calculateBtn">Calculate</button>
             </form>
         </div>
         <div id="summaryScreen" style="display:none;">
@@ -289,11 +341,81 @@
             <div id="summaryContent"></div>
             <button id="returnBtn">Return to Input</button>
         </div>
+        <div id="adminScreen" style="display:none;">
+            <h2>Admin: Edit Assumptions</h2>
+            <div id="adminContent">
+                <div class="admin-section">
+                    <h3>Pricing</h3>
+                    <label for="pierCostConcrete">Concrete ($):</label>
+                    <input type="number" id="pierCostConcrete" min="0" step="1" value="1100">
+                    <label for="pierCostSteel">Steel ($):</label>
+                    <input type="number" id="pierCostSteel" min="0" step="1" value="1400">
+                    <label for="pierCostHelical">Helical ($):</label>
+                    <input type="number" id="pierCostHelical" min="0" step="1" value="2000">
+                    <label for="permitCost">Permits ($):</label>
+                    <input type="number" id="permitCost" min="0" step="1" value="500">
+                    <label for="additionalCost">Repairs ($):</label>
+                    <input type="number" id="additionalCost" min="0" step="1" value="1500">
+                </div>
+                <div class="admin-section">
+                    <h3>Depth Multipliers</h3>
+                    <label for="depthShallow">Shallow:</label>
+                    <input type="number" id="depthShallow" min="0" step="0.01" value="1.0">
+                    <label for="depthMedium">Medium:</label>
+                    <input type="number" id="depthMedium" min="0" step="0.01" value="1.15">
+                    <label for="depthDeep">Deep:</label>
+                    <input type="number" id="depthDeep" min="0" step="0.01" value="1.4">
+                </div>
+                <div class="admin-section">
+                    <h3>Access Multipliers</h3>
+                    <label for="accessEasy">Easy:</label>
+                    <input type="number" id="accessEasy" min="0" step="0.01" value="1.0">
+                    <label for="accessModerate">Moderate:</label>
+                    <input type="number" id="accessModerate" min="0" step="0.01" value="1.1">
+                    <label for="accessDifficult">Difficult:</label>
+                    <input type="number" id="accessDifficult" min="0" step="0.01" value="1.25">
+                </div>
+                <div class="admin-section">
+                    <h3>Placement</h3>
+                    <label for="slabPerimeterSpacing">Slab Perimeter (ft):</label>
+                    <input type="number" id="slabPerimeterSpacing" min="1" step="0.1" value="6">
+                    <label for="slabInteriorDensity">Slab Interior (sq ft):</label>
+                    <input type="number" id="slabInteriorDensity" min="1" step="1" value="100">
+                    <label for="slabBothInteriorDensity">Slab Both (sq ft):</label>
+                    <input type="number" id="slabBothInteriorDensity" min="1" step="1" value="200">
+                    <label for="crawlBasementDensity">Crawl/Basement (sq ft):</label>
+                    <input type="number" id="crawlBasementDensity" min="1" step="1" value="150">
+                </div>
+                <div class="admin-section">
+                    <h3>Severity Multipliers</h3>
+                    <label for="severityLight">Light:</label>
+                    <input type="number" id="severityLight" min="0" step="0.01" value="1.0">
+                    <label for="severityModerate">Moderate:</label>
+                    <input type="number" id="severityModerate" min="0" step="0.01" value="1.5">
+                    <label for="severitySevere">Severe:</label>
+                    <input type="number" id="severitySevere" min="0" step="0.01" value="2.0">
+                </div>
+            </div>
+            <button id="returnBtnAdmin">Return to Input</button>
+        </div>
     </div>
 
     <script>
+        // Store assumptions globally
+        let assumptions = {
+            pierCosts: { concrete: 1100, steel: 1400, helical: 2000 },
+            permitCost: 500,
+            additionalCost: 1500,
+            depthMultipliers: { shallow: 1.0, medium: 1.15, deep: 1.4 },
+            accessMultipliers: { easy: 1.0, moderate: 1.1, difficult: 1.25 },
+            slabPerimeterSpacing: 6,
+            slabInteriorDensity: 100,
+            slabBothInteriorDensity: 200,
+            crawlBasementDensity: 150,
+            severityMultipliers: { light: 1.0, moderate: 1.5, severe: 2.0 }
+        };
+
         function calculateEstimate() {
-            // Get form values
             const foundationType = document.getElementById('foundationType').value;
             const squareFootage = parseFloat(document.getElementById('squareFootage').value);
             const repairLocation = document.getElementById('repairLocation').value;
@@ -304,72 +426,41 @@
             const includePermits = document.getElementById('permits').checked;
             const includeAdditional = document.getElementById('additional').checked;
 
-            // Validate inputs
             if (!foundationType || isNaN(squareFootage) || squareFootage <= 0 || !repairLocation || !severity || !pierType || !depth || !access) {
                 alert('Please fill in all fields correctly.');
                 return;
             }
 
-            // Calculate perimeter
             const perimeter = 4 * Math.sqrt(squareFootage);
-
-            // Calculate base number of piers
             let baseNumberOfPiers;
             if (foundationType === 'slab') {
                 if (repairLocation === 'perimeter') {
-                    baseNumberOfPiers = perimeter / 6;
+                    baseNumberOfPiers = perimeter / assumptions.slabPerimeterSpacing;
                 } else if (repairLocation === 'interior') {
-                    baseNumberOfPiers = squareFootage / 100;
+                    baseNumberOfPiers = squareFootage / assumptions.slabInteriorDensity;
                 } else {
-                    baseNumberOfPiers = (perimeter / 6) + (squareFootage / 200);
+                    baseNumberOfPiers = (perimeter / assumptions.slabPerimeterSpacing) + (squareFootage / assumptions.slabBothInteriorDensity);
                 }
             } else {
-                baseNumberOfPiers = squareFootage / 150;
+                baseNumberOfPiers = squareFootage / assumptions.crawlBasementDensity;
             }
 
-            // Apply severity multiplier
-            const severityMultipliers = { light: 1.0, moderate: 1.5, severe: 2.0 };
-            const severityMultiplier = severityMultipliers[severity];
+            const severityMultiplier = assumptions.severityMultipliers[severity];
             const adjustedNumberOfPiers = baseNumberOfPiers * severityMultiplier;
             const estimatedPiers = Math.round(adjustedNumberOfPiers);
 
-            // Texas-specific pricing
-            const pierCosts = { 
-                concrete: 1100,
-                steel: 1400,
-                helical: 2000
-            };
-            const baseCostPerPier = pierCosts[pierType];
-
-            // Apply depth multiplier
-            const depthMultipliers = { 
-                shallow: 1.0,
-                medium: 1.15,
-                deep: 1.4
-            };
-            const depthMultiplier = depthMultipliers[depth];
+            const baseCostPerPier = assumptions.pierCosts[pierType];
+            const depthMultiplier = assumptions.depthMultipliers[depth];
             let adjustedCostPerPier = baseCostPerPier * depthMultiplier;
-
-            // Calculate pier cost
             let pierCost = estimatedPiers * adjustedCostPerPier;
 
-            // Apply access multiplier
-            const accessMultipliers = { 
-                easy: 1.0, 
-                moderate: 1.1, 
-                difficult: 1.25
-            };
-            const accessMultiplier = accessMultipliers[access];
+            const accessMultiplier = assumptions.accessMultipliers[access];
             pierCost *= accessMultiplier;
 
-            // Optional costs
-            const permitCost = includePermits ? 500 : 0;
-            const additionalCost = includeAdditional ? 1500 : 0;
-
-            // Total cost
+            const permitCost = includePermits ? assumptions.permitCost : 0;
+            const additionalCost = includeAdditional ? assumptions.additionalCost : 0;
             const totalCost = Math.round(pierCost + permitCost + additionalCost);
 
-            // Generate summary
             const foundationLabels = { slab: 'Slab', crawl: 'Crawl Space', basement: 'Basement' };
             const locationLabels = { perimeter: 'Perimeter', interior: 'Interior', both: 'Both' };
             const severityLabels = { light: 'Light', moderate: 'Moderate', severe: 'Severe' };
@@ -387,21 +478,92 @@
                 <p class="disclaimer">*Based on average Texas residential pricing. Consult a professional for an accurate quote.</p>
             `;
 
-            // Show summary screen
             document.getElementById('summaryContent').innerHTML = summary;
             document.getElementById('inputScreen').style.display = 'none';
             document.getElementById('summaryScreen').style.display = 'block';
         }
 
+        function showAdminScreen() {
+            document.getElementById('pierCostConcrete').value = assumptions.pierCosts.concrete;
+            document.getElementById('pierCostSteel').value = assumptions.pierCosts.steel;
+            document.getElementById('pierCostHelical').value = assumptions.pierCosts.helical;
+            document.getElementById('permitCost').value = assumptions.permitCost;
+            document.getElementById('additionalCost').value = assumptions.additionalCost;
+            document.getElementById('depthShallow').value = assumptions.depthMultipliers.shallow;
+            document.getElementById('depthMedium').value = assumptions.depthMultipliers.medium;
+            document.getElementById('depthDeep').value = assumptions.depthMultipliers.deep;
+            document.getElementById('accessEasy').value = assumptions.accessMultipliers.easy;
+            document.getElementById('accessModerate').value = assumptions.accessMultipliers.moderate;
+            document.getElementById('accessDifficult').value = assumptions.accessMultipliers.difficult;
+            document.getElementById('slabPerimeterSpacing').value = assumptions.slabPerimeterSpacing;
+            document.getElementById('slabInteriorDensity').value = assumptions.slabInteriorDensity;
+            document.getElementById('slabBothInteriorDensity').value = assumptions.slabBothInteriorDensity;
+            document.getElementById('crawlBasementDensity').value = assumptions.crawlBasementDensity;
+            document.getElementById('severityLight').value = assumptions.severityMultipliers.light;
+            document.getElementById('severityModerate').value = assumptions.severityMultipliers.moderate;
+            document.getElementById('severitySevere').value = assumptions.severityMultipliers.severe;
+
+            document.getElementById('inputScreen').style.display = 'none';
+            document.getElementById('adminScreen').style.display = 'block';
+        }
+
+        function updateAssumptions() {
+            assumptions.pierCosts.concrete = parseFloat(document.getElementById('pierCostConcrete').value) || assumptions.pierCosts.concrete;
+            assumptions.pierCosts.steel = parseFloat(document.getElementById('pierCostSteel').value) || assumptions.pierCosts.steel;
+            assumptions.pierCosts.helical = parseFloat(document.getElementById('pierCostHelical').value) || assumptions.pierCosts.helical;
+            assumptions.permitCost = parseFloat(document.getElementById('permitCost').value) || assumptions.permitCost;
+            assumptions.additionalCost = parseFloat(document.getElementById('additionalCost').value) || assumptions.additionalCost;
+            assumptions.depthMultipliers.shallow = parseFloat(document.getElementById('depthShallow').value) || assumptions.depthMultipliers.shallow;
+            assumptions.depthMultipliers.medium = parseFloat(document.getElementById('depthMedium').value) || assumptions.depthMultipliers.medium;
+            assumptions.depthMultipliers.deep = parseFloat(document.getElementById('depthDeep').value) || assumptions.depthMultipliers.deep;
+            assumptions.accessMultipliers.easy = parseFloat(document.getElementById('accessEasy').value) || assumptions.accessMultipliers.easy;
+            assumptions.accessMultipliers.moderate = parseFloat(document.getElementById('accessModerate').value) || assumptions.accessMultipliers.moderate;
+            assumptions.accessMultipliers.difficult = parseFloat(document.getElementById('accessDifficult').value) || assumptions.accessMultipliers.difficult;
+            assumptions.slabPerimeterSpacing = parseFloat(document.getElementById('slabPerimeterSpacing').value) || assumptions.slabPerimeterSpacing;
+            assumptions.slabInteriorDensity = parseFloat(document.getElementById('slabInteriorDensity').value) || assumptions.slabInteriorDensity;
+            assumptions.slabBothInteriorDensity = parseFloat(document.getElementById('slabBothInteriorDensity').value) || assumptions.slabBothInteriorDensity;
+            assumptions.crawlBasementDensity = parseFloat(document.getElementById('crawlBasementDensity').value) || assumptions.crawlBasementDensity;
+            assumptions.severityMultipliers.light = parseFloat(document.getElementById('severityLight').value) || assumptions.severityMultipliers.light;
+            assumptions.severityMultipliers.moderate = parseFloat(document.getElementById('severityModerate').value) || assumptions.severityMultipliers.moderate;
+            assumptions.severityMultipliers.severe = parseFloat(document.getElementById('severitySevere').value) || assumptions.severityMultipliers.severe;
+        }
+
         function showInputScreen() {
-            // Reset to input screen
+            updateAssumptions();
+            document.getElementById('adminScreen').style.display = 'none';
             document.getElementById('summaryScreen').style.display = 'none';
             document.getElementById('inputScreen').style.display = 'block';
+            document.getElementById('infoBox').style.display = 'none';
+        }
+
+        // Info box handling
+        function showInfoBox(info) {
+            const infoBox = document.getElementById('infoBox');
+            infoBox.textContent = info;
+            infoBox.style.display = info ? 'block' : 'none';
+        }
+
+        function setupInfoEvents() {
+            const inputs = document.querySelectorAll('select, input[type="number"]');
+
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    showInfoBox(input.getAttribute('data-info'));
+                });
+                input.addEventListener('blur', () => {
+                    showInfoBox('');
+                });
+            });
         }
 
         // Add event listeners
         document.getElementById('calculateBtn').addEventListener('click', calculateEstimate);
+        document.getElementById('adminBtn').addEventListener('click', showAdminScreen);
         document.getElementById('returnBtn').addEventListener('click', showInputScreen);
+        document.getElementById('returnBtnAdmin').addEventListener('click', showInputScreen);
+
+        // Initialize info box events
+        setupInfoEvents();
     </script>
 </body>
 </html>
